@@ -20,6 +20,9 @@ var _ = {};
 *   _.identity(5) === 5
 *   _.identity({a: "b"}) === {a: "b"}
 */
+_.identity = function(value){
+    return value;
+};
 
 
 /** _.typeOf
@@ -41,7 +44,15 @@ var _ = {};
 * _.typeOf("javascript") -> "string"
 * _.typeOf([1,2,3]) -> "array"
 */
-
+_.typeOf = function(value) {
+    if (value === null) {
+        return "null";
+    } else if (Array.isArray(value)) {
+        return "array";
+    } else {
+        return typeof value;
+    }
+};
 
 /** _.first
 * Arguments:
@@ -60,7 +71,22 @@ var _ = {};
 *   _.first(["a", "b", "c"], 1) -> "a"
 *   _.first(["a", "b", "c"], 2) -> ["a", "b"]
 */
-
+ // If the input is not an array, return []
+  // If number is not provided or not a number, return just the first element
+    // If number is negative, return []
+// If number is 0 or greater, return the first <number> elements
+_.first = function(array, number) { 
+    if (!Array.isArray(array)) {
+        return [];
+    } 
+    if (number === undefined || typeof number !== "number") {
+        return array[0];
+    }
+    if (number < 0) {
+        return [];
+    }   
+    return array.slice(0, number);
+};
 
 /** _.last
 * Arguments:
@@ -79,7 +105,27 @@ var _ = {};
 *   _.last(["a", "b", "c"], 1) -> "c"
 *   _.last(["a", "b", "c"], 2) -> ["b", "c"]
 */
-
+// If the input is not an array
+// If number is not provided or not a number, return just the last , return []eleme
+// If number is negative, return []
+// If number is greater than array length, return full array  
+// Otherwise return last <number> elements
+_.last = function(array, number) {   
+    if (!Array.isArray(array)) {
+        return [];
+    }
+    if (number === undefined || typeof number !== "number") {
+        return array[array.length - 1];
+    }
+    if (number < 0) {
+        return [];
+    }
+    if (number > array.length) {
+        return array.slice();
+    }
+ return array.slice(array.length - number);
+    
+};
 
 /** _.indexOf
 * Arguments:
@@ -96,7 +142,20 @@ var _ = {};
 *   _.indexOf(["a","b","c"], "c") -> 2
 *   _.indexOf(["a","b","c"], "d") -> -1
 */
+//
 
+// Return the index if a match is found
+// If no match is found, return -1
+
+_.indexOf = function(array, value) {
+    // Loop through the array and check for the first occurrence of the value
+    for (let i = 0; i < array.length; i++) {
+        if (array[i] === value) {
+            return i; 
+        }
+    }
+    return -1;
+};
 
 /** _.contains
 * Arguments:
@@ -112,13 +171,17 @@ var _ = {};
 * Examples:
 *   _.contains([1,"two", 3.14], "two") -> true
 */
+_.contains = function(array, value){
+    return array.indexOf(value) !== -1? true: false;
+    };
+
 
 
 /** _.each
-* Arguments:
+* Arguments:e4 /1jkl1
 *   1) A collection
 *   2) A function
-* Objectives:
+* Objectives:54
 *   1) if <collection> is an array, call <function> once for each element
 *      with the arguments:
 *         the element, it's index, <collection>
@@ -129,9 +192,23 @@ var _ = {};
 *   _.each(["a","b","c"], function(e,i,a){ console.log(e)});
 *      -> should log "a" "b" "c" to the console
 */
+// If collection is an array, loop through with index
 
+_.each = function(collection, func) {
+    if (Array.isArray(collection)) {  
+        for (let i = 0; i < collection.length; i++) {
+            func(collection[i], i, collection);
+        }
+    } else if (typeof collection === 'object' && collection !== null) {`d   `
+        for (let key in collection) {
+            if (collection.hasOwnProperty(key)) {
+                func(collection[key], key, collection);
+            }
+        }
+    }
+};
 
-/** _.unique
+/** _.unique584*,fdxdxr122+203
 * Arguments:
 *   1) An array
 * Objectives:
@@ -140,7 +217,18 @@ var _ = {};
 * Examples:
 *   _.unique([1,2,2,4,5,6,5,2]) -> [1,2,4,5,6]
 */
+_.unique = function(array) {
+    let result = [];
 
+    for (let i = 0; i < array.length; i++) {
+        // Only add the value if it's not already in result
+        if (_.indexOf(result, array[i]) === -1) {
+            result.push(array[i]);
+        }
+    }
+
+    return result;
+};
 
 /** _.filter
 * Arguments:
@@ -157,8 +245,17 @@ var _ = {};
 * Extra Credit:
 *   use _.each in your implementation
 */
+_.filter = function(array, func) {
+    let result = [];
 
+    _.each(array, function(element, index, collection) {
+        if (func(element, index, collection)) {
+            result.push(element);
+        }
+    });
 
+    return result;
+};
 /** _.reject
 * Arguments:
 *   1) An array
@@ -170,7 +267,11 @@ var _ = {};
 *   3) This is the logical inverse if _.filter()
 * Examples:
 *   _.reject([1,2,3,4,5], function(e){return e%2 === 0}) -> [1,3,5]
-*/
+*/_.reject = function(array, func) {
+    return _.filter(array, function(element, index, collection) {
+        return !func(element, index, collection);
+    });
+};
 
 
 /** _.partition
@@ -186,11 +287,23 @@ var _ = {};
 * Edge Cases:
 *   1) This is going to return an array of arrays.
 * Examples:
-*   _.partition([1,2,3,4,5], function(element,index,arr){
-*     return element % 2 === 0;
-*   }); -> [[2,4],[1,3,5]]
+ 
 }
-*/
+*/_.partition = function(array, func) {
+    let truthy = [];
+    let falsy = [];
+
+    _.each(array, function(element, index, collection) {
+        if (func(element, index, collection)) {
+            truthy.push(element);
+        } else {
+            falsy.push(element);
+        }
+    });
+
+    return [truthy, falsy];
+};
+
 
 
 /** _.map
@@ -208,6 +321,15 @@ var _ = {};
 * Examples:
 *   _.map([1,2,3,4], function(e){return e * 2}) -> [2,4,6,8]
 */
+_.map = function(collection, func) {
+    let result = [];
+
+    _.each(collection, function(value, key, coll) {
+        result.push(func(value, key, coll));
+    });
+
+    return result;
+};
 
 
 /** _.pluck
@@ -220,7 +342,11 @@ var _ = {};
 * Examples:
 *   _.pluck([{a: "one"}, {a: "two"}], "a") -> ["one", "two"]
 */
-
+_.pluck = function(array, property) {
+    return _.map(array, function(obj) {
+        return obj[property];
+    });
+};
 
 /** _.every
 * Arguments:
@@ -242,7 +368,30 @@ var _ = {};
 *   _.every([2,4,6], function(e){return e % 2 === 0}) -> true
 *   _.every([1,2,3], function(e){return e % 2 === 0}) -> false
 */
-
+_.every = function(collection, func) {
+    // If no function is provided, check if all values are truthy
+    if (typeof func !== 'function') {
+      for (let key in collection) {
+        if (!collection[key]) return false;
+      }
+      return true;
+    }
+  
+    // If collection is an array
+    if (Array.isArray(collection)) {
+      for (let i = 0; i < collection.length; i++) {
+        if (!func(collection[i], i, collection)) return false;
+      }
+    } 
+    // If collection is an object
+    else {
+      for (let key in collection) {
+        if (!func(collection[key], key, collection)) return false;
+      }
+    }
+  
+    return true;
+  };
 
 /** _.some
 * Arguments:
@@ -264,28 +413,28 @@ var _ = {};
 *   _.some([1,3,5], function(e){return e % 2 === 0}) -> false
 *   _.some([1,2,3], function(e){return e % 2 === 0}) -> true
 */
+_.some = function(collection, func) {
+    if (typeof func !== 'function') {
+      // No function provided: return true if any element is truthy
+      for (let key in collection) {
+        if (collection[key]) return true;
+      }
+      return false;
+    }
+  
+    if (Array.isArray(collection)) {
+      for (let i = 0; i < collection.length; i++) {
+        if (func(collection[i], i, collection)) return true;
+      }
+    } else {
+      for (let key in collection) {
+        if (func(collection[key], key, collection)) return true;
+      }
+    }
+    return false;
+  };
 
-
-/** _.reduce
-* Arguments:
-*   1) An array
-*   2) A function
-*   3) A seed
-* Objectives:
-*   1) Call <function> for every element in <collection> passing the arguments:
-*         previous result, element, index
-*   2) Use the return value of <function> as the "previous result"
-*      for the next iteration
-*   3) On the very first iteration, use <seed> as the "previous result"
-*   4) If no <seed> was given, use the first element/value of <collection> as <seed> and continue to the next element
-*   5) After the last iteration, return the return value of the final <function> call
-* Edge Cases:
-*   1) What if <seed> is not given?
-* Examples:
-*   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
-*/
-
-
+ 
 /** _.extend
 * Arguments:
 *   1) An Object
@@ -300,7 +449,17 @@ var _ = {};
 *   _.extend(data, {b:"two"}); -> data now equals {a:"one",b:"two"}
 *   _.extend(data, {a:"two"}); -> data now equals {a:"two"}
 */
-
+_.extend = function(target, ...sources) {
+    for (let i = 0; i < sources.length; i++) {
+      let source = sources[i];
+      for (let key in source) {
+        if (source.hasOwnProperty(key)) {
+          target[key] = source[key];
+        }
+      }
+    }
+    return target;
+  };
 //////////////////////////////////////////////////////////////////////
 // DON'T REMOVE THIS CODE ////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////
