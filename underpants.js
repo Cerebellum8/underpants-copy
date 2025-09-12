@@ -75,17 +75,17 @@ _.typeOf = function(value) {
   // If number is not provided or not a number, return just the first element
     // If number is negative, return []
 // If number is 0 or greater, return the first <number> elements
-_.first = function(array, number) { 
+_.first = function(array, num) { 
     if (!Array.isArray(array)) {
         return [];
     } 
-    if (number === undefined || typeof number !== "number") {
+    if (num === undefined ||  num !== "num") {
         return array[0];
     }
-    if (number < 0) {
+    if (num < 0) {
         return [];
     }   
-    return array.slice(0, number);
+    return array.slice(0, num);
 };
 
 /** _.last
@@ -433,6 +433,24 @@ _.some = function(collection, func) {
     }
     return false;
   };
+/** _.reduce
+* Arguments:
+*   1) An array
+*   2) A function
+*   3) A seed
+* Objectives:
+*   1) Call <function> for every element in <collection> passing the arguments:
+*         previous result, element, index
+*   2) Use the return value of <function> as the "previous result"
+*      for the next iteration
+*   3) On the very first iteration, use <seed> as the "previous result"
+*   4) If no <seed> was given, use the first element/value of <collection> as <seed> and continue to the next element
+*   5) After the last iteration, return the return value of the final <function> call
+* Edge Cases:
+*   1) What if <seed> is not given?
+* Examples:
+*   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
+*/
 
  
 /** _.extend
