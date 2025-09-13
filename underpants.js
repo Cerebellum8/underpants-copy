@@ -75,17 +75,17 @@ _.typeOf = function(value) {
   // If number is not provided or not a number, return just the first element
     // If number is negative, return []
 // If number is 0 or greater, return the first <number> elements
-_.first = function(array, num) { 
+_.first = function(array, number) { 
     if (!Array.isArray(array)) {
         return [];
     } 
-    if (num === undefined ||  num !== "num") {
+    if (number === undefined || typeof number !== "number") {
         return array[0];
     }
-    if (num < 0) {
+    if (number < 0) {
         return [];
     }   
-    return array.slice(0, num);
+    return array.slice(0, number);
 };
 
 /** _.last
@@ -433,6 +433,8 @@ _.some = function(collection, func) {
     }
     return false;
   };
+
+
 /** _.reduce
 * Arguments:
 *   1) An array
@@ -451,8 +453,22 @@ _.some = function(collection, func) {
 * Examples:
 *   _.reduce([1,2,3], function(previousSum, currentValue, currentIndex){ return previousSum + currentValue }, 0) -> 6
 */
+_.reduce = function(array, func, seed){
+ let previousResult;
+ let startIndex;
+ if (seed === undefined){
+    previousResult = array[0];
+    startIndex = 1;
+ }else{
+    previousResult = seed;
+    startIndex = 0;
+}
+for (let i = startIndex; i < array.length; i++){
+    previousResult = func(previousResult, array[i], i);
+}
+    return previousResult;
 
- 
+};
 /** _.extend
 * Arguments:
 *   1) An Object
